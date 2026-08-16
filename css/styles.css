@@ -1,0 +1,140 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 125%;
+}
+
+:root {
+  /* primary color is read by voronoi to build the palette */
+  --primary-color: #151514;
+  --border-colour: #ffffff;
+  --text-colour:   #e8e8e4;
+
+  --gap: 0.75rem;
+  --page-width: 62.5rem;
+  --side-width: 11.25rem;
+
+  --banner-width: 26.25rem;
+  --banner-gap: 3rem;
+}
+
+@font-face {
+  font-family: "Domine";
+  src: url('/fonts/Domine-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Domine", serif;
+  font-size: 1rem;
+  color: var(--text-colour);
+}
+
+#bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.banner {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: var(--banner-gap);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--banner-width);
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  max-width: var(--page-width);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--side-width) 1fr var(--side-width);
+  grid-template-areas:
+    "nav     nav      nav"
+    "menu    content  extras"
+    "footer  footer   footer";
+  gap: var(--gap);
+}
+
+.nav     { grid-area: nav; }
+.menu    { grid-area: menu; }
+.content { grid-area: content; }
+.extras  { grid-area: extras; }
+.footer  { grid-area: footer; }
+
+.panel {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-colour);
+  padding: 1.25rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.welcome {
+  min-height: 30rem;
+}
+
+.footer {
+    text-align: center;
+}
+
+
+.banner h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 4rem;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+a {
+  color: var(--text-colour);
+}
+
+@media (max-width: 700px) {
+  .banner {
+    position: static;
+    max-width: none;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "nav"
+      "menu"
+      "content"
+      "extras"
+      "footer";
+  }
+}
