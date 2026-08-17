@@ -34,6 +34,7 @@ html {
 
 body {
   margin: 0;
+  background-color: var(--primary-color);
   padding: 2.5rem 1.25rem;
   min-height: 100vh;
   display: flex;
@@ -47,8 +48,6 @@ body {
 #bg {
   position: fixed;
   inset: 0;
-  /* canvas is a replaced element: without an explicit size it falls back to its
-     intrinsic 300x150 and ignores the right/bottom offsets */
   width: 100%;
   height: 100%;
   z-index: -1;
@@ -104,8 +103,6 @@ body {
     min-height: 0;
 }
 
-/* .menu-body is a flex item and a BFC, so neither the head's margin-bottom nor
-   this margin-top can collapse. left alone they stack and push the body down. */
 .menu-body > :first-child {
     margin-top: 0;
 }
@@ -124,8 +121,6 @@ body {
 
 .panel {
   background-color: var(--primary-color);
-  /* --panel-border for a border on its own (headless panels like .footer),
-     otherwise a panel's --head-color colours its border to match */
   border: 1px solid var(--panel-border, var(--head-color, var(--border-colour)));
   padding: var(--panel-pad);
 }
@@ -170,18 +165,18 @@ body {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
-  align-items: center;   /* without this the items stretch and the text sits top-aligned */
+  align-items: center;
 }
 
 .nav img {
-  display: block;   /* inline images sit on the baseline, leaving a descender gap below */
+  display: block;
   height: 2em;
   width: auto;
 }
 
 audio {
   display: block;
-  width: 100%;   /* the default ~300px control overflows an 11.25rem column */
+  width: 100%;
 }
 
 a {

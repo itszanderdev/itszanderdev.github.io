@@ -23,7 +23,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let width = 0;
 let height = 0;
-let seeds = [];      // each seed keeps its home cell centre and its own drift phases
+let seeds = [];
 let points = [];
 let frame;
 
@@ -64,6 +64,26 @@ function rgbToHsl([r, g, b]) {
   return [((h * 60) + 360) % 360, s * 100, l * 100];
 }
 
+// re-rolled once per page load, so the pattern is fresh
+const SALT = (Math.random() * 0xffffffff) | 0;
+
+function hash32(x) {
+  x = (x + 0x9e3779b9) | 0;
+  x ^= x >>> 16;
+  x = Math.imul(x, 0x21f0aaad);
+  x ^= x >>> 15;
+  x = Math.imul(x, 0x735a2d97);
+  x ^= x >>> 15;
+  return x | 0;
+}
+
+function rand(col, row, field) {
+  let h = hash32(SALT ^ hash32(col));
+  h = hash32(h ^ hash32(row));
+  h = hash32(h ^ hash32(field));
+  return (h >>> 0) / 4294967296;
+}
+
 function readBaseColour() {
   const value = getComputedStyle(document.documentElement)
     .getPropertyValue(BASE_COLOUR_VAR);
@@ -102,7 +122,6 @@ function resize() {
 }
 
 function buildSeeds() {
-  buildPalette();
   seeds = [];
 
   // the wobble a seed is allowed either side of its home, so it never leaves its own cell
@@ -116,15 +135,15 @@ function buildSeeds() {
         homeX: col * CELL_SIZE + CELL_SIZE / 2,
         homeY: row * CELL_SIZE + CELL_SIZE / 2,
         amplitude,
-        phaseX1: Math.random() * Math.PI * 2,
-        phaseX2: Math.random() * Math.PI * 2,
-        phaseY1: Math.random() * Math.PI * 2,
-        phaseY2: Math.random() * Math.PI * 2,
-        rateX1: 0.7 + Math.random() * 0.6,
-        rateX2: 1.7 + Math.random() * 0.9,
-        rateY1: 0.7 + Math.random() * 0.6,
-        rateY2: 1.7 + Math.random() * 0.9,
-        colour: palette[Math.floor(Math.random() * palette.length)],
+        phaseX1: rand(col, row, 0) * Math.PI * 2,
+        phaseX2: rand(col, row, 1) * Math.PI * 2,
+        phaseY1: rand(col, row, 2) * Math.PI * 2,
+        phaseY2: rand(col, row, 3) * Math.PI * 2,
+        rateX1: 0.7 + rand(col, row, 4) * 0.6,
+        rateX2: 1.7 + rand(col, row, 5) * 0.9,
+        rateY1: 0.7 + rand(col, row, 6) * 0.6,
+        rateY2: 1.7 + rand(col, row, 7) * 0.9,
+        colour: palette[Math.floor(rand(col, row, 8) * palette.length)],
       });
     }
   }
@@ -182,17 +201,23 @@ function start() {
 
 
 resize();
+buildPalette(); // will need to change to be able to read light vs dark mode
 buildSeeds();
 start();
 
-let resizeTimer;
+
+let resizePending = false;
 window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
+  if (resizePending) return;
+  resizePending = true;
+
+  requestAnimationFrame((now) => {
+    resizePending = false;
     resize();
     buildSeeds();
-    start();
-  }, 200);
+    positionSeeds(now / 1000);
+    render();
+  });
 });
 
 reducedMotion.addEventListener('change', start);
