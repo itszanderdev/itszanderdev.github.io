@@ -9,15 +9,21 @@ html {
 :root {
   /* primary color is read by voronoi to build the palette */
   --primary-color: #151514;
-  --border-colour: #ffffff;
+  --border-colour: #e8e8e4;
   --text-colour:   #e8e8e4;
 
-  --gap: 0.75rem;
+  --green-colour:  #2f5d50;
+  --purple-colour: #4a3d6b;
+  --brick-colour:  #6b3d3d;
+  --gold-colour:   #6b5a2f;
+
+  --gap: 0.5rem;
   --page-width: 62.5rem;
   --side-width: 11.25rem;
+  --panel-pad: 1.25rem;
 
   --banner-width: 26.25rem;
-  --banner-gap: 3rem;
+  --banner-gap: 2.5rem;
 }
 
 @font-face {
@@ -41,6 +47,10 @@ body {
 #bg {
   position: fixed;
   inset: 0;
+  /* canvas is a replaced element: without an explicit size it falls back to its
+     intrinsic 300x150 and ignores the right/bottom offsets */
+  width: 100%;
+  height: 100%;
   z-index: -1;
   pointer-events: none;
 }
@@ -72,16 +82,62 @@ body {
   gap: var(--gap);
 }
 
-.nav     { grid-area: nav; }
-.menu    { grid-area: menu; }
-.content { grid-area: content; }
-.extras  { grid-area: extras; }
-.footer  { grid-area: footer; }
+.nav {
+    grid-area: nav;
+    --head-color: var(--brick-colour);
+}
+
+.welcome {
+  min-height: 30rem;
+  --head-color: var(--green-colour);
+}
+
+.menu    {
+    grid-area: menu;
+    --head-color: var(--purple-colour);
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-body {
+    flex: 1;
+    min-height: 0;
+}
+
+/* .menu-body is a flex item and a BFC, so neither the head's margin-bottom nor
+   this margin-top can collapse. left alone they stack and push the body down. */
+.menu-body > :first-child {
+    margin-top: 0;
+}
+.content {
+    grid-area: content;
+
+}
+.extras  {
+    grid-area: extras;
+    --head-color: var(--gold-colour);
+}
+.footer  {
+    grid-area: footer;
+    --panel-border: var(--brick-colour);
+}
 
 .panel {
   background-color: var(--primary-color);
-  border: 1px solid var(--border-colour);
-  padding: 1.25rem;
+  /* --panel-border for a border on its own (headless panels like .footer),
+     otherwise a panel's --head-color colours its border to match */
+  border: 1px solid var(--panel-border, var(--head-color, var(--border-colour)));
+  padding: var(--panel-pad);
+}
+
+.panel .panel-head{
+    margin: calc(var(--panel-pad) * -1);
+    margin-bottom: var(--panel-pad);
+    padding: 0.4rem 0.75rem;
+    background: var(--head-color, #2b2b28);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    font-weight: normal;
 }
 
 .stack {
@@ -90,9 +146,7 @@ body {
   gap: var(--gap);
 }
 
-.welcome {
-  min-height: 30rem;
-}
+
 
 .footer {
     text-align: center;
@@ -116,10 +170,28 @@ body {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+  align-items: center;   /* without this the items stretch and the text sits top-aligned */
+}
+
+.nav img {
+  display: block;   /* inline images sit on the baseline, leaving a descender gap below */
+  height: 2em;
+  width: auto;
+}
+
+audio {
+  display: block;
+  width: 100%;   /* the default ~300px control overflows an 11.25rem column */
 }
 
 a {
   color: var(--text-colour);
+}
+
+.scroll {
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 @media (max-width: 700px) {
