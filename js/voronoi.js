@@ -5,6 +5,9 @@ import { Delaunay } from "https://cdn.jsdelivr.net/npm/d3-delaunay@6/+esm";
 const CELL_SIZE = 200;
 const SCATTER    = 0.75;   // 0 = perfect grid, 1 = fully scattered
 const DRIFT_SPEED = 0.06; // radians per second, roughly one lap per 100s
+// share of a seed's wobble carried by the slow wave, the rest goes to the fast one.
+// 1 = a single sine and visibly periodic, 0.5 = both waves equal and jittery.
+const DRIFT_BIAS  = 0.6;
 
 const BASE_COLOUR_VAR  = '--primary-color';
 const FALLBACK_COLOUR  = '#151514';
@@ -156,9 +159,11 @@ function positionSeeds(time) {
 
   for (let i = 0; i < seeds.length; i++) {
     const s = seeds[i];
-    // weights sum to 1, so the offset can never exceed the amplitude and the seed stays in its cell
-    const dx = 0.6 * Math.sin(t * s.rateX1 + s.phaseX1) + 0.4 * Math.sin(t * s.rateX2 + s.phaseX2);
-    const dy = 0.6 * Math.sin(t * s.rateY1 + s.phaseY1) + 0.4 * Math.sin(t * s.rateY2 + s.phaseY2);
+    // the two weights sum to 1 by construction, so the offset can never exceed the
+    // amplitude and the seed stays in its cell. that is what makes SCATTER mean
+    // exactly "fraction of a half cell a seed may wander".
+    const dx = DRIFT_BIAS * Math.sin(t * s.rateX1 + s.phaseX1) + (1 - DRIFT_BIAS) * Math.sin(t * s.rateX2 + s.phaseX2);
+    const dy = DRIFT_BIAS * Math.sin(t * s.rateY1 + s.phaseY1) + (1 - DRIFT_BIAS) * Math.sin(t * s.rateY2 + s.phaseY2);
 
     points[i][0] = s.homeX + dx * s.amplitude;
     points[i][1] = s.homeY + dy * s.amplitude;
@@ -221,3 +226,12 @@ window.addEventListener('resize', () => {
 });
 
 reducedMotion.addEventListener('change', start);
+
+// the base colour is baked into palette and into every seed's colour at build
+// time, so a theme switch has to redo both rather than just repaint
+window.addEventListener('themechange', () => {
+  buildPalette();
+  buildSeeds();
+  positionSeeds(performance.now() / 1000);
+  render();
+});
