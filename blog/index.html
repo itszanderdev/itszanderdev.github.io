@@ -1,0 +1,22 @@
+---
+layout: base.html
+title: blog
+full: true
+---
+<section class="panel welcome">
+  <h2 class="panel-head">Blog</h2>
+  <div class="panel-body">
+    {%- for post in collections.post | reverse %}
+    <a href="{{ post.url }}">
+        <article class="card">
+            <h3>{{ post.data.title }}</h3>
+            <p class="tag">{{ post.data.tags[0] }}</p>
+            <p><time datetime="{{ post.date | isoDate }}">{{ post.date | readableDate }}</time></p>
+            <p>{{ post.data.summary }}</p>
+        </article>
+    </a>
+    {%- else %}
+    <p>nothing here yet.</p>
+    {%- endfor %}
+  </div>
+</section>

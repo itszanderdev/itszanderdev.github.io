@@ -1,98 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>zanderdev</title>
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
-  <script>
-  //prevents flashing wrong pallete on za screen
-    try {
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.dataset.theme = 'light';
-      }
-    } catch (e) {}
-  </script>
-</head>
-<body>
-  <canvas id="bg"></canvas>
-  <div class="page">
-      <header class="panel banner">
-        <h1>zanderdev</h1>
-        <button id="theme-toggle" class="theme-toggle" type="button">
-            <span class="theme-face theme-face-dark">
-                <img src="images/dark.png" alt="dark" width="50" height="50">
-            </span>
-            <span class="theme-face theme-face-light">
-                <img src="images/light.png" alt="light" width="50" height="50">
-            </span>
-        </button>
-      </header>
-      <div class="panel scrolling-left">
-          <div class="scrolling-mask">
-              <div class="scrolling-track">
-                  <p>BREAKING BEWS...</p>
-                  <p>WTF HAPPENED...</p>
-                  <p>HAWK TUAH SIMULATOR CANCELLED? MORE AT ELEVEN...</p>
-                  <p>I HAVE MASTERED SCROLLING TEXT... HEHHE</p>
-              </div>
-          </div>
-      </div>
-    <div class="layout">
-      <nav class="panel nav">
-        <ul>
-          <li><a href="/">home</a></li>
-          <li><a href="/projects">projects</a></li>
-          <li><a href="music/music.html">music</a></li>
-          <li><a href="/blog">blog</a></li>
-          <li><a href="/vibes">vibes</a></li>
-          <li><a href="/about">about</a></li>
-          <li>
-              <a href="https://1000bugs.org" target="_blank">
-                  <img src="images/1000bugs.png" alt="1000bugs">
-              </a>
-          </li>
-        </ul>
-      </nav>
-
-      <aside class="panel menu">
-          <h1 class="panel-head">menu</h1>
-          <div class="menu-body scroll">
-              <p>menu</p>
-          </div>
-          <audio controls autoplay>
-              <source src="audio/theworldmakethemcry.wav" type="audio/wav">
-          </audio>
-      </aside>
-
-      <main class="content stack">
-        <section class="panel welcome">
-          <h2 class="panel-head">Welcome Board</h2>
-          <h2>Hello, welcome to my website.</h2>
-          <p>It is still very much work in progress, but hopefully you can see the vision.</p>
-          <p>I've made this website mainly for the <a href="/blog">blog</a> but I've decided to expand it to my other interests.</p>
-          <p class="p-indent">&bull; The <a href="/projects">projects</a> tab is where you can find most of my work.</p>
-          <p class="p-indent">&bull; The <a href="/music">music</a> tab is where you can find the music I've made, and music that I like.</p>
-          <p class="p-indent">&bull; The <a href="/blog">blog</a> is where I write my thoughts on many subjects. I'd check it out if I were you.</p>
-          <p class="p-indent">&bull; The <a href="/vibes">vibes</a> tab is a collection of things I find interesting, or give me inspiration.</p>
-          <p class="p-indent">&bull; The <a href="/about">about</a> tab is more about me but I won't be doxxing myself so it's not too interesting.</p>
-          <p class="p-indent">&bull; The <a href="https://1000bugs.org" target="_blank">red bug button</a> is a new indie game dev company called '1000 Bugs'. Check it out...</p>
-        </section>
-      </main>
-
-      <aside class="panel extras">
-        <h1 class="panel-head">extras</h1>
-        <p>extra stuff</p>
-      </aside>
-
-      <footer class="panel footer">
-        made by zander
-      </footer>
-
-    </div>
+---
+layout: base.html
+title: zanderdev
+---
+<section class="panel welcome">
+  <h2 class="panel-head">Welcome Board</h2>
+  <div class="panel-body">
+    <h2>Hello, welcome to my website.</h2>
+    <p>It is still very much work in progress, but hopefully you can see the vision.</p>
+    <p>I've made this website mainly for the <a href="/blog/">blog</a> but I've decided to expand it to my other interests.</p>
+    <p class="p-indent">&bull; The <a href="/projects/">projects</a> tab is where you can find most of my work.</p>
+    <p class="p-indent">&bull; The <a href="/music/">music</a> tab is where you can find the music I've made, and music that I like.</p>
+    <p class="p-indent">&bull; The <a href="/blog/">blog</a> is where I write my thoughts on many subjects. I'd check it out if I were you.</p>
+    <p class="p-indent">&bull; The <a href="/vibes/">vibes</a> tab is a collection of things I find interesting, or give me inspiration.</p>
+    <p class="p-indent">&bull; The <a href="/about/">about</a> tab is more about me but I won't be doxxing myself so it's not too interesting.</p>
+    <p class="p-indent">&bull; The <a href="https://1000bugs.org" target="_blank">red bug button</a> is a new indie game dev company called '1000 Bugs'. Check it out...</p>
   </div>
-
-  <script type="module" src="js/voronoi.js"></script>
-  <script type="module" src="js/theme.js"></script>
-</body>
-</html>
+</section>

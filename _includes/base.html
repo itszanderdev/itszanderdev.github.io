@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "zanderdev" }}</title>
+  <link rel="stylesheet" href="/css/styles.css" type="text/css">
+  <link rel="modulepreload" href="/js/voronoi.js">
+  <link rel="modulepreload" href="/js/vendor/d3-delaunay.js">
+  <link rel="modulepreload" href="/js/vendor/delaunator.js">
+  <link rel="modulepreload" href="/js/vendor/robust-predicates.js">
+  <script>
+  //prevents flashing wrong pallete on za screen
+    try {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+
+    //clock for one session
+    try {
+      var epoch = sessionStorage.getItem('anim-epoch');
+      if (epoch === null) {
+        epoch = String(Date.now());
+        sessionStorage.setItem('anim-epoch', epoch);
+      }
+      document.documentElement.style.setProperty(
+        '--anim-offset', '-' + ((Date.now() - Number(epoch)) / 1000) + 's');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="page">
+      <header class="panel banner">
+        <h1>zanderdev</h1>
+        <button id="theme-toggle" class="theme-toggle" type="button">
+            <span class="theme-face theme-face-dark">
+                <img src="/images/dark.png" alt="dark" width="50" height="50">
+            </span>
+            <span class="theme-face theme-face-light">
+                <img src="/images/light.png" alt="light" width="50" height="50">
+            </span>
+        </button>
+      </header>
+      <div class="panel scrolling-left">
+          <div class="scrolling-mask">
+              <div class="scrolling-track">
+                  <p>BREAKING BEWS...</p>
+                  <p>WTF HAPPENED...</p>
+                  <p>HAWK TUAH SIMULATOR CANCELLED? MORE AT ELEVEN...</p>
+                  <p>I HAVE MASTERED SCROLLING TEXT... HEHHE</p>
+              </div>
+          </div>
+      </div>
+    <div class="layout{% if full %} full{% endif %}">
+      <nav class="panel nav">
+        <ul>
+          {%- for item in nav %}
+          <li><a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a></li>
+          {%- endfor %}
+          <li>
+              <a href="https://1000bugs.org" target="_blank">
+                  <img src="/images/1000bugs.png" alt="1000bugs">
+              </a>
+          </li>
+        </ul>
+      </nav>
+
+      {%- if not full %}
+      <aside class="panel menu">
+          <h1 class="panel-head">menu</h1>
+          <div class="menu-body scroll">
+              <p>menu</p>
+          </div>
+      </aside>
+      {%- endif %}
+
+      <main class="content stack">
+        {{ content | safe }}
+      </main>
+
+      {%- if not full %}
+      <aside class="panel extras">
+        <h1 class="panel-head">extras</h1>
+        <div class="extras-body scroll">
+          <p>extra stuff</p>
+        </div>
+      </aside>
+      {%- endif %}
+
+      <footer class="panel footer">
+        made by zander
+      </footer>
+
+    </div>
+  </div>
+  <script type="module" src="/js/voronoi.js"></script>
+  <script type="module" src="/js/theme.js"></script>
+</body>
+</html>

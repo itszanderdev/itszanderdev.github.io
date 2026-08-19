@@ -28,12 +28,18 @@ html {
     --dark-orange: #53281b;
     --dark-blue: #24294e;
 
+
     color-scheme: dark;
 
   /* primary color is read by voronoi to build the palette */
     --primary-color: var(--dark-bg);
     --border-colour: var(--dark-ink);
     --text-colour:   var(--dark-ink);
+
+    --generic-colour: var(--dark-ink);
+    --conspiracy-colour: var(--dark-green);
+    --politics-colour: var(--dark-purple);
+    --art-colour: var(--dark-gold);
 
     --green-colour:  var(--dark-green);
     --purple-colour: var(--dark-purple);
@@ -51,6 +57,7 @@ html {
     --banner-gap: 3.5rem;
 
     --section-indent: 1rem;
+    --content-height: 26rem;
 }
 
 :root[data-theme="light"] {
@@ -60,13 +67,20 @@ html {
     --border-colour: var(--light-ink);
     --text-colour:   var(--light-ink);
 
+    /* tag colours  maybe replace with reading tags*/
+    --generic-colour: var(--light-ink);
+    --conspiracy-colour: var(--light-green);
+    --politics-colour: var(--light-purple);
+    --art-colour: var(--light-gold);
+
+    /* colours */
     --green-colour:  var(--light-green);
     --purple-colour: var(--light-purple);
     --brick-colour:  var(--light-brick);
     --gold-colour:   var(--light-gold);
     --orange-colour: var(--light-orange);
     --blue-colour:   var(--light-blue);
-}
+}s
 
 
 /*  fonts  */
@@ -140,14 +154,23 @@ audio {
     font-size: 4rem;
 }
 
+
 .layout {
     display: grid;
     grid-template-columns: var(--side-width) 1fr var(--side-width);
+    grid-template-rows: auto var(--content-height, 25rem) auto;
     grid-template-areas:
         "nav     nav      nav"
         "menu    content  extras"
         "footer  footer   footer";
     gap: var(--gap);
+}
+
+.layout.full{
+    grid-template-areas:
+        "nav     nav      nav"
+        "content    content  content"
+        "footer  footer   footer";
 }
 
 
@@ -158,6 +181,7 @@ audio {
     --head-color: var(--brick-colour);
 }
 
+
 .menu    {
     grid-area: menu;
     --head-color: var(--purple-colour);
@@ -165,22 +189,42 @@ audio {
     flex-direction: column;
 }
 
-.menu-body {
+.menu-body,
+.extras-body,
+.panel-body {
     flex: 1;
     min-height: 0;
-}
-
-.menu-body > :first-child {
-    margin-top: 0;
-}
-
-
-.content {
-    grid-area: content;
-    height: var(--content-height);
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+.menu-body > :first-child,
+.extras-body > :first-child,
+.panel-body > :first-child {
+    margin-top: 0;
+}
+
+.content,
+.menu,
+.extras {
+    min-height: 0;
+}
+
+.content {
+    grid-area: content;
+    overflow: hidden;
+}
+
+
+.content > .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.content > .panel:last-child {
+    flex: 1 1 auto;
 }
 
 .welcome {
@@ -190,6 +234,8 @@ audio {
 .extras  {
     grid-area: extras;
     --head-color: var(--gold-colour);
+    display: flex;
+    flex-direction: column;
 }
 
 .footer  {
@@ -246,6 +292,9 @@ audio {
     width: max-content;
     position: relative;
     animation: scroll-left calc(var(--msg-time) * var(--msg-count)) linear infinite;
+    /* set by the inline head script to seconds since the session started, so the
+       ticker picks up mid-run rather than restarting on every navigation */
+    animation-delay: var(--anim-offset, 0s);
 }
 
 .scrolling-track p {
@@ -297,6 +346,23 @@ audio {
     width: auto;
     border: 2px solid var(--border-colour);
     border-radius: 5px;
+}
+
+
+/* cards */
+.card {
+    height: auto;
+    border: 1px solid var(--border-colour);
+    padding-left: 1rem;
+    align-content: top;
+    gap: var(--gap);
+}
+
+
+
+.tag {
+    background-color: var(--blue-colour);
+    padding: 0.2rem 0.5rem;
 }
 
 
@@ -377,4 +443,32 @@ audio {
       "extras"
       "footer";
   }
+}
+
+
+/*  page transitions  */
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.22s;
+    animation-timing-function: ease;
+}
+
+
+.banner         { view-transition-name: banner; }
+.scrolling-left { view-transition-name: ticker; }
+.nav            { view-transition-name: nav; }
+.menu           { view-transition-name: menu; }
+.extras         { view-transition-name: extras; }
+.footer         { view-transition-name: footer; }
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
 }

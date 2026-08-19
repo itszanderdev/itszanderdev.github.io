@@ -1,0 +1,8 @@
+[
+  { "name": "home",     "url": "/" },
+  { "name": "projects", "url": "/projects/" },
+  { "name": "music",    "url": "/music/" },
+  { "name": "blog",     "url": "/blog/" },
+  { "name": "vibes",    "url": "/vibes/" },
+  { "name": "about",    "url": "/about/" }
+]

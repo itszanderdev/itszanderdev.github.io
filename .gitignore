@@ -1,0 +1,5 @@
+# eleventy build output - generated on deploy, never commit it
+_site/
+.eleventy-cache/
+
+node_modules/

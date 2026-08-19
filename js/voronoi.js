@@ -1,4 +1,4 @@
-import { Delaunay } from "https://cdn.jsdelivr.net/npm/d3-delaunay@6/+esm";
+import { Delaunay } from "./vendor/d3-delaunay.js";
 
 
 
@@ -67,8 +67,27 @@ function rgbToHsl([r, g, b]) {
   return [((h * 60) + 360) % 360, s * 100, l * 100];
 }
 
-// re-rolled once per page load, so the pattern is fresh
-const SALT = (Math.random() * 0xffffffff) | 0;
+// kept in sessionStorage so moving between pages does not re-roll it. a new tab
+// or a new visit still gets a fresh one.
+function remember(key, make) {
+  try {
+    const stored = sessionStorage.getItem(key);
+    if (stored !== null) return Number(stored);
+    const fresh = make();
+    sessionStorage.setItem(key, String(fresh));
+    return fresh;
+  } catch (e) {
+    return make();   // private mode can throw on storage access
+  }
+}
+
+const SALT = remember('voronoi-salt', () => (Math.random() * 0xffffffff) | 0);
+
+// the rAF clock restarts at zero on every page load, so the drift would snap back
+// to its opening phase on each navigation even with the same seeds. offsetting by
+// how long ago the session began makes it carry on where it left off.
+const EPOCH = remember('anim-epoch', () => Date.now());
+const TIME_OFFSET = (Date.now() - EPOCH) / 1000;
 
 function hash32(x) {
   x = (x + 0x9e3779b9) | 0;
@@ -187,7 +206,7 @@ function render() {
 }
 
 function tick(now) {
-  positionSeeds(now / 1000);
+  positionSeeds(now / 1000 + TIME_OFFSET);
   render();
   frame = requestAnimationFrame(tick);
 }
@@ -196,7 +215,7 @@ function start() {
   cancelAnimationFrame(frame);
 
   if (reducedMotion.matches) {
-    positionSeeds(0);
+    positionSeeds(TIME_OFFSET);
     render();
     return;
   }
@@ -220,7 +239,7 @@ window.addEventListener('resize', () => {
     resizePending = false;
     resize();
     buildSeeds();
-    positionSeeds(now / 1000);
+    positionSeeds(now / 1000 + TIME_OFFSET);
     render();
   });
 });
@@ -232,6 +251,6 @@ reducedMotion.addEventListener('change', start);
 window.addEventListener('themechange', () => {
   buildPalette();
   buildSeeds();
-  positionSeeds(performance.now() / 1000);
+  positionSeeds(performance.now() / 1000 + TIME_OFFSET);
   render();
 });
