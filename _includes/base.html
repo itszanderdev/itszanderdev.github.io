@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title or "zanderdev" }}</title>
+  <title>
+      {%- if title %}
+          zanderdev/{{ title }}
+      {%- else %}
+          zanderdev
+      {%- endif %}
+  </title>
   <link rel="stylesheet" href="/css/styles.css" type="text/css">
   <link rel="modulepreload" href="/js/voronoi.js">
   <link rel="modulepreload" href="/js/vendor/d3-delaunay.js">
@@ -84,7 +90,6 @@
       <aside class="panel extras">
         <h1 class="panel-head">extras</h1>
         <div class="extras-body scroll">
-          <p>extra stuff</p>
         </div>
       </aside>
       {%- endif %}

@@ -354,10 +354,8 @@ audio {
     height: auto;
     border: 1px solid var(--border-colour);
     padding-left: 1rem;
-    align-content: top;
     gap: var(--gap);
 }
-
 
 
 .tag {
@@ -365,6 +363,9 @@ audio {
     padding: 0.2rem 0.5rem;
 }
 
+.change{
+    border: 1px solid var(--border-colour);
+}
 
 /*  theme toggle  */
 
@@ -393,7 +394,7 @@ audio {
 
 .theme-face img {
     display: inline-block;
-    height: 7.5em;
+    height: 6em;
     width: auto;
     z-index: 2;
 }
