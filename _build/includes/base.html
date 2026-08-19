@@ -59,8 +59,9 @@
               </div>
           </div>
       </div>
+    <div id="swup">
     <div class="layout{% if full %} full{% endif %}">
-      <nav class="panel nav">
+      <nav class="panel nav brick">
         <ul>
           {%- for item in nav %}
           <li><a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a></li>
@@ -74,7 +75,7 @@
       </nav>
 
       {%- if not full %}
-      <aside class="panel menu">
+      <aside class="panel menu purple">
           <h1 class="panel-head">menu</h1>
           <div class="menu-body scroll">
               <p>menu</p>
@@ -87,20 +88,26 @@
       </main>
 
       {%- if not full %}
-      <aside class="panel extras">
+      <aside class="panel extras gold">
         <h1 class="panel-head">extras</h1>
         <div class="extras-body scroll">
         </div>
       </aside>
       {%- endif %}
 
-      <footer class="panel footer">
+      <footer class="panel footer brick">
         made by zander
       </footer>
 
     </div>
+    </div>
   </div>
   <script type="module" src="/js/voronoi.js"></script>
   <script type="module" src="/js/theme.js"></script>
+
+  <script src="/js/vendor/swup.js"></script>
+  <script src="/js/vendor/swup-preload.js"></script>
+  <script src="/js/router.js"></script>
+  <script src="/js/blog-filter.js"></script>
 </body>
 </html>

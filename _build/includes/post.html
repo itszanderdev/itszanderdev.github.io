@@ -2,9 +2,10 @@
 layout: base.html
 full: true
 ---
-<section class="panel welcome">
+<section class="panel {{ categories[category] }}">
   <h2 class="panel-head">{{ title }}</h2>
   <div class="panel-body">
+      <h3>{{ summary }}</h3>
     <p class="post-meta"><time datetime="{{ date | isoDate }}">{{ date | readableDate }}</time></p>
     {{ content | safe }}
     <p><a href="/blog/">&larr; back to blog</a></p>

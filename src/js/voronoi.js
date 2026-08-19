@@ -5,8 +5,6 @@ import { Delaunay } from "./vendor/d3-delaunay.js";
 const CELL_SIZE = 200;
 const SCATTER    = 0.75;   // 0 = perfect grid, 1 = fully scattered
 const DRIFT_SPEED = 0.06; // radians per second, roughly one lap per 100s
-// share of a seed's wobble carried by the slow wave, the rest goes to the fast one.
-// 1 = a single sine and visibly periodic, 0.5 = both waves equal and jittery.
 const DRIFT_BIAS  = 0.6;
 
 const BASE_COLOUR_VAR  = '--primary-color';
@@ -67,8 +65,7 @@ function rgbToHsl([r, g, b]) {
   return [((h * 60) + 360) % 360, s * 100, l * 100];
 }
 
-// kept in sessionStorage so moving between pages does not re-roll it. a new tab
-// or a new visit still gets a fresh one.
+// kept in sessionStorage so moving between pages does not re-roll it
 function remember(key, make) {
   try {
     const stored = sessionStorage.getItem(key);
@@ -83,9 +80,6 @@ function remember(key, make) {
 
 const SALT = remember('voronoi-salt', () => (Math.random() * 0xffffffff) | 0);
 
-// the rAF clock restarts at zero on every page load, so the drift would snap back
-// to its opening phase on each navigation even with the same seeds. offsetting by
-// how long ago the session began makes it carry on where it left off.
 const EPOCH = remember('anim-epoch', () => Date.now());
 const TIME_OFFSET = (Date.now() - EPOCH) / 1000;
 
@@ -178,9 +172,7 @@ function positionSeeds(time) {
 
   for (let i = 0; i < seeds.length; i++) {
     const s = seeds[i];
-    // the two weights sum to 1 by construction, so the offset can never exceed the
-    // amplitude and the seed stays in its cell. that is what makes SCATTER mean
-    // exactly "fraction of a half cell a seed may wander".
+    // the two weights sum to 1 by construction, so the offset can never exceed the amplitude and the seed stays in its cell
     const dx = DRIFT_BIAS * Math.sin(t * s.rateX1 + s.phaseX1) + (1 - DRIFT_BIAS) * Math.sin(t * s.rateX2 + s.phaseX2);
     const dy = DRIFT_BIAS * Math.sin(t * s.rateY1 + s.phaseY1) + (1 - DRIFT_BIAS) * Math.sin(t * s.rateY2 + s.phaseY2);
 

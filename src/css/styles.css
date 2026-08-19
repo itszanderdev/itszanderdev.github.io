@@ -2,6 +2,13 @@
     box-sizing: border-box;
 }
 
+/* the [hidden] attribute is only display:none in the user-agent stylesheet, so
+   any author rule setting display (.card is display:block) silently beats it and
+   the element stays visible. !important is the standard fix. */
+[hidden] {
+    display: none !important;
+}
+
 html {
     font-size: 125%;
 }
@@ -80,7 +87,7 @@ html {
     --gold-colour:   var(--light-gold);
     --orange-colour: var(--light-orange);
     --blue-colour:   var(--light-blue);
-}s
+}
 
 
 /*  fonts  */
@@ -178,13 +185,11 @@ audio {
 
 .nav {
     grid-area: nav;
-    --head-color: var(--brick-colour);
 }
 
 
 .menu    {
     grid-area: menu;
-    --head-color: var(--purple-colour);
     display: flex;
     flex-direction: column;
 }
@@ -227,26 +232,36 @@ audio {
     flex: 1 1 auto;
 }
 
-.welcome {
-    --head-color: var(--green-colour);
-}
-
 .extras  {
     grid-area: extras;
-    --head-color: var(--gold-colour);
     display: flex;
     flex-direction: column;
 }
 
 .footer  {
     grid-area: footer;
-    --panel-border: var(--brick-colour);
     text-align: center;
 }
 
 .p-indent {
     padding-left: 10px;
 }
+
+/*  panel colours  */
+
+/* put one of these on any .panel to colour its head and its border.
+   nothing structural sets --head-color any more, so a panel's colour is
+   whatever the markup says it is. */
+.green   { --head-color: var(--green-colour); }
+.purple  { --head-color: var(--purple-colour); }
+.brick   { --head-color: var(--brick-colour); }
+.gold    { --head-color: var(--gold-colour); }
+.orange  { --head-color: var(--orange-colour); }
+.blue    { --head-color: var(--blue-colour); }
+/* no .ink: --border-colour is near-white in dark mode, so text sitting on it
+   disappears. every colour above is dark in dark mode and light in light mode,
+   which is what keeps --text-colour readable on all of them. */
+
 
 /*  panels  */
 
@@ -292,8 +307,6 @@ audio {
     width: max-content;
     position: relative;
     animation: scroll-left calc(var(--msg-time) * var(--msg-count)) linear infinite;
-    /* set by the inline head script to seconds since the session started, so the
-       ticker picks up mid-run rather than restarting on every navigation */
     animation-delay: var(--anim-offset, 0s);
 }
 
@@ -351,16 +364,54 @@ audio {
 
 /* cards */
 .card {
-    height: auto;
-    border: 1px solid var(--border-colour);
-    padding-left: 1rem;
-    gap: var(--gap);
+    display: block;
+    border: 1px solid var(--active-filter-colour, var(--border-colour));
+    padding: 0.75rem 1rem;
+    margin-bottom: var(--gap);
+    color: inherit;
+    text-decoration: none;
 }
 
+.card:hover,
+.card:focus-visible {
+    background-color: color-mix(in srgb, var(--text-colour) 8%, transparent);
+}
+
+.card:focus-visible {
+    outline: 2px solid var(--text-colour);
+    outline-offset: 2px;
+}
+
+.card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.card-head h3 {
+    margin: 0;
+}
+
+.card-summary {
+    margin: 0.4rem 0 0;
+}
+
+.card-date {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
 
 .tag {
-    background-color: var(--blue-colour);
-    padding: 0.2rem 0.5rem;
+    flex: none;
+    align-self: center;
+    /* same utility classes as panels: .tag.purple, .tag.gold, ... */
+    background-color: var(--head-color, var(--blue-colour));
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
 }
 
 .change{
@@ -446,6 +497,65 @@ audio {
   }
 }
 
+
+/*  swup  */
+/* removed transitions cause instant page swaps looks cleaner */
+
+/*  blog filters  */
+
+.blog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.blog-toolbar h4 {
+    margin: 0;
+}
+
+.filters {
+    --head-color: initial;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.filter {
+    font: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: var(--text-colour);
+    background: none;
+    border: 1px solid var(--head-color, var(--border-colour));
+    padding: 0.15rem 0.6rem;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.filter:hover,
+.filter:focus-visible {
+    opacity: 1;
+}
+
+.filter.is-active {
+    opacity: 1;
+    background-color: var(--head-color, var(--blue-colour));
+}
+
+
+.filter[data-filter="all"].is-active {
+    background: none;
+    border-color: var(--text-colour);
+}
+
+.no-matches {
+    opacity: 0.7;
+}
 
 /*  page transitions  */
 

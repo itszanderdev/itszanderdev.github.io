@@ -3,21 +3,39 @@ layout: base.html
 title: blog
 full: true
 ---
-<section class="panel welcome">
+<section class="panel green">
   <h2 class="panel-head">Blog</h2>
   <div class="panel-body">
-      <h4>All opinions are my own and this isn't to be taken too seriously.</h4>
+      <div class="blog-toolbar">
+        <h4 >All opinions are my own and this isn't to be taken too seriously.</h4  >
+        {%- set cats = collections.post | categoriesOf %}
+        {%- if cats.length %}
+        <div class="filters" role="group" aria-label="Filter posts by category">
+          <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">all</button>
+          {%- for cat in cats %}
+          <button type="button" class="filter {{ categories[cat] }}" data-filter="{{ cat }}" aria-pressed="false">{{ cat }}</button>
+          {%- endfor %}
+        </div>
+        {%- endif %}
+      </div>
+
+    <div class="card-list">
     {%- for post in collections.post | reverse %}
-    <a href="{{ post.url }}">
-        <article class="card">
+    <a class="card" href="{{ post.url }}" data-category="{{ post.data.category }}">
+        <div class="card-head">
             <h3>{{ post.data.title }}</h3>
-            <p class="tag">{{ post.data.tags[0] }}</p>
-            <p><time datetime="{{ post.date | isoDate }}">{{ post.date | readableDate }}</time></p>
-            <p>{{ post.data.summary }}</p>
-        </article>
+            {%- if post.data.category %}
+            <span class="tag {{ categories[post.data.category] }}">{{ post.data.category }}</span>
+            {%- endif %}
+        </div>
+        <p class="card-summary">{{ post.data.summary }}</p>
+        <p class="card-date"><time datetime="{{ post.date | isoDate }}">{{ post.date | readableDate }}</time></p>
     </a>
     {%- else %}
     <p>nothing here yet.</p>
     {%- endfor %}
+    </div>
+
+    <p class="no-matches" hidden>no posts in that category.</p>
   </div>
 </section>
