@@ -1,28 +1,27 @@
 module.exports = function (eleventyConfig) {
-  // these are static assets, not templates: copy them across untouched
+  // Static asset passthroughs
   eleventyConfig.addPassthroughCopy("css");
   eleventyConfig.addPassthroughCopy("js");
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("audio");
 
-  // 2026-08-18 -> 18 August 2026
+  // Date filters
   eleventyConfig.addFilter("readableDate", (value) =>
     new Date(value).toLocaleDateString("en-GB", {
       day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
     }));
 
-  // 2026-08-18, for the <time datetime> attribute
   eleventyConfig.addFilter("isoDate", (value) =>
     new Date(value).toISOString().slice(0, 10));
 
   return {
+    pathPrefix: "/",
     dir: {
       input: ".",
       output: "_site",
       includes: "_includes",
       data: "_data",
     },
-    // lets .html files use nunjucks tags, which is what makes layouts work
     htmlTemplateEngine: "njk",
     markdownTemplateEngine: "njk",
   };
